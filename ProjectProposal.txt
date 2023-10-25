@@ -1,0 +1,56 @@
+Summary:
+I will make a language testing app
+* that requires users to enter grammatical correct stories or sentences (in their base language)
+-> the input is separated into sentences
+-> the user is presented with the first sentence in their base language and all of the words for the sentence in the foreign language
+-> the user must select the words in the foreign language in the correct order that creates their base language sentence
+-> then the next sentence in the story will appear or a completed! notification
+
+** based on time to complete the above application 
+- I might add an option for a one word direct translation: given some words chage meaning in sentences. 
+- I might add a scoring system for people to compare scores on stories. 
+- I might do an email invite to friends to try a certain story translation. 
+- I might make pagination of the login home page to view more stories in the database there. 
+- I might make a search option for the stories. 
+
+1. What goal will your website be designed to achieve?
+The website will be used to test and improve foreign language understanding. 
+
+2. What kind of users will visit your site? In other words, what is the demographic of
+your users?
+The demographic includes anyone wanting to learn or test their proficiency of a language and knows how to use a computer. I imagine the main target would be high school to college students. 
+
+3. What data do you plan on using? You may have not picked your actual API yet,
+which is fine, just outline what kind of data you would like it to contain.
+I will use the google translate API. 
+
+4. In brief, outline your approach to creating your project (knowing that you may not
+know everything in advance and that these details might change later). 
+Answer questions like the ones below, but feel free to add more information:
+a. What does your database schema look like?
+TranslateDatabse:
+- user table with login info and password encryption
+- story table with translation from google
+- tag table with tag words for stories, so that people may search for stories by tags
+- users_stories table with score/completion information
+- tags_stories table matching one tag to many stories and one story to many tags
+
+b. What kinds of issues might you run into with your API?
+I hope that I don't have issues making too many requests. 
+
+c. Is there any sensitive information you need to secure?
+No - but I will have logins with users so that progress can be saved. 
+
+d. What functionality will your app include?
+The app will be mainly for review of language translation. It will be hard for someone with no experience in the foreign language to use this app solely to learn. I view this as a supplemtal app to something like Duolingo. 
+
+e. What will the user flow look like?
+Home Page with app description and prompts to login or signup
+-> login page home: shows list of current OR most used translation stories
+-> with updated NAV bar options: create new, view other users, view my previous translations
+
+f. What features make your site more than CRUD? Do you have any stretch
+goals?
+More than CRUD: user login, integration of Google API
+** stretch goals in the based on time completion section above. 
+
