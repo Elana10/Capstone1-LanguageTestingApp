@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div>
+        <div id="story_top">
+            <h2 data-id="{{story.id}}" id="story_title">{{story.title}}</h2>
+            <button id="begin_button">Begin Translation Test</button>           
+        </div>
+
+
+        <div class="container">
+            <div id="story_container">
+
+            </div>
+        </div>
+
+
+
+
+        <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.js"></script>
+        <script src="/static/app-solve.js" ></script>
+{% endblock %}

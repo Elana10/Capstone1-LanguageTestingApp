@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <h2>The Language Games Stories</h2>
+        <table class="table table-striped" id="whole_table">
+            <thead class="thead-dark">
+                <tr>
+                    <td></td>
+                    <td>                    
+                        <select name="base_language_selection" id="base_language_selection">
+                        <option value="all">All Languages</option>                        
+                        <option value="English">English</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="German">German</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="French">French</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Portuguese">Portuguese</option>
+                        <option value="Farsi">Farsi</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Chinese">Chinese</option>
+                        </select>   
+                    </td>
+                    <td>
+                        <select name="foreign_language_selection" id="foreign_language_selection">
+                            <option value="all">All Languages</option>
+                            <option value="English">English</option>
+                            <option value="Spanish">Spanish</option>
+                            <option value="German">German</option>
+                            <option value="Arabic">Arabic</option>
+                            <option value="French">French</option>
+                            <option value="Italian">Italian</option>
+                            <option value="Portuguese">Portuguese</option>
+                            <option value="Farsi">Farsi</option>
+                            <option value="Japanese">Japanese</option>
+                            <option value="Chinese">Chinese</option>
+                        </select>                        
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <th id="title">
+                    Story Title</th>
+                <th id="base_language">
+                    Base Language
+                </th>
+                <th id="foreign_language">
+                    Foreign Language
+                </th>
+                <th id="sentences_length"> Sentence Length</th>
+                <th id="total_attempts">Total Attempts By Users</th>
+                <th id="all_high_score">Highest Score Overall</th>
+                <th id="your_high_score">Your Highest Score</th>
+            </thead>
+
+            <tbody id="tbody_stories">
+                {% for story in stories %}
+                    <tr class="table_rows">
+                        <td class="story_titles">
+                            <a href="/story/{{story.id}}">{{story.title}}</a>
+                        </td>
+                        <td>{{story.base_language}}</td>
+                        <td>{{story.foreign_language}}</td>
+                        <td>{{story.sentences|length}}</td>
+                        <td>{{story.scores|length}}</td>
+                        <td>{{ story.scores|map(attribute='score')|max }}%</td>
+                        <td>{{ story.scores|selectattr('user_id','equalto', g.user.id)|map(attribute='score')|max }}%</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+
+
+        </table>
+
+
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    <script src="/static/app-home.js" ></script>
+
+{% endblock %}

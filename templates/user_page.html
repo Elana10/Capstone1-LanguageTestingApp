@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block nav %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="/users/{{g.user.id}}/stats">Stats</a></li>
+        <li><a href="/users/{{g.user.id}}/my_stories">My Stories</a></li>
+        <li><a href="/users/{{g.user.id}}/update">User Info</a></li>
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}
+
+
+{% endblock %}

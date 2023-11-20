@@ -1,0 +1,17 @@
+{% extends 'user_page.html' %}
+
+{% block content %}
+
+<div>
+    <h4>
+        Total Tokens Used While Making Translation Requests to ChatGPT:
+    </h4> 
+</div>
+    <div>
+        <b>
+            <big>
+            {{tokens[0][0]}}                
+            </big>
+        </b>        
+    </div>
+{% endblock %}

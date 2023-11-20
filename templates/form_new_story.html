@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <form method="POST" id="new_story_form">
+      {{ form.hidden_tag() }}
+
+      {% for field in form if field.widget.input_type != 'hidden' %}
+        <div>
+          <span>
+          {{ field.label}}          
+          </span>
+          <span>
+          {{ field(placeholder=field.label.text, class="form-control") }}            
+          </span>
+          {% for error in field.errors %}
+            <span class="text-danger">{{ error }}</span>
+          {% endfor %}           
+        </div>
+      {% endfor %}
+
+      <button class="btn btn-primary btn-lg">Create Translation!</button>
+  </form>
+
+
+
+
+<div id="loading" style="display: none;">
+  <iframe src="https://giphy.com/embed/xTk9ZvMnbIiIew7IpW" width="480" height="480" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+</div>
+
+<script src="/static/app-form.js" ></script>
+{% endblock %}
