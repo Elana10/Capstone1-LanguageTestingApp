@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from datetime import datetime
 from random import choice
-
+ 
 bcrypt = Bcrypt()
 db = SQLAlchemy()
 
@@ -23,6 +23,10 @@ class Scores(db.Model):
     story_id = db.Column(db.Integer, db.ForeignKey('stories.id', ondelete="cascade"))
     score = db.Column(db.Float, nullable = False)
     created_at = db.Column(db.DateTime, nullable = False)
+    story = db.relationship('Story')
+
+    def __repr__(self):
+        return f"User: {self.user_id} Score:{self.score} Story:{self.story_id} "
 
 
 class Story(db.Model):
@@ -38,7 +42,7 @@ class Story(db.Model):
     scores = db.relationship('Scores')
 
     def __repr__(self):
-        return f"<ID {self.id} {self.title} from {db.base_language} to {db.translated_language}>"
+        return f"<ID {self.id} {self.title} from {self.base_language} to {self.foreign_language}>"
 
 class StorySentence(db.Model):
     """A translated sentence for each line in the story."""
@@ -95,36 +99,3 @@ class User(db.Model):
         
         return False
     
-
-# Word model tinkering
-##############################################################
-
-# class WordForWord(db.Model):
-#     """Table of words and their direct translations."""
-#     __tablename__ = "words"
-
-#     base_language = db.Column(db.String, nullable = False, primary_key = True)
-#     foreign_language = db.Column(db.String, nullable = False, primary_key = True)
-#     base_text = db.Column(db.String, nullable = False, primary_key = True)
-#     foreign_text = db.Column(db.String, nullable = False, primary_key = True)
-
-#     @classmethod
-#     def check_for_duplicate(cls, base_language, foreign_language, base_text, foreign_text):
-#         """Create entry for new word combinations or return false."""
-#         translate_word = cls.query.filter_by(
-#             base_language = base_language, 
-#             foreign_language = foreign_language, 
-#             base_text = base_text, 
-#             foreign_text = foreign_text).first()
-        
-#         if not translate_word:
-#             new_entry = WordForWord(
-#                 base_language = base_language, 
-#                 foreign_language = foreign_language, 
-#                 base_text = base_text,
-#                 foreign_text = foreign_text
-#             )
-#             db.session.add(new_entry)
-#             db.session.commit()
-#             return new_entry
-#         return False

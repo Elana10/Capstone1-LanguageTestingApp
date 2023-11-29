@@ -70,7 +70,6 @@ def do_logout():
     if CURR_USER_KEY in session:
         del session[CURR_USER_KEY]
 
-
 ###########################################################
 # View routes for login/signup/logout
 
@@ -184,20 +183,19 @@ def create_new_story():
 @app.route('/users/<int:id>')
 def load_user_page(id):
     user = User.query.get_or_404(id)
-
     return render_template('user_page.html', user = user)
 
 @app.route('/users/<int:id>/stats')
 def view_user_stats(id):
     """See user stats"""
-    stories = Story.query.join(Scores).filter(Scores.user_id == id).all()
+    # stories = Story.query.join(Scores).filter(Scores.user_id == id).all()
+    stories = Scores.query.join(Story).filter(Scores.user_id ==id).all()
 
-    return render_template('stats.html', stories = stories)
+    return render_template('user_stats.html', stories = stories)
 
 @app.route('/users/<int:id>/my_stories')
 def load_all_user_stories(id):
     """Return the stories you've created - eventually add editing feature"""
-
     stories = Story.query.filter_by(user_id = id).all()
 
     return render_template('/user_stories.html', stories = stories)
@@ -213,7 +211,6 @@ def update_user_information(id):
         .filter(User.id == user.id)
         .all()
     )
-
 
     return render_template('/user_update.html', user=user, tokens = user_token_sum)
 
@@ -257,7 +254,6 @@ def check_that_the_correct_word_is_selected():
     sentence = int(data.get('sentence'))
     word = sentences_list[sentence]['translated_sentence_list'][current_word]
     word_lower = word.lower()
-
     points_earned = session['points']
     total_points = session['total_points']
 
@@ -313,28 +309,6 @@ def check_that_the_correct_word_is_selected():
                     'points' : session['points'],
                     'total_points' :session['total_points']
                     })
-
-@app.route('/play_sentence', methods =['POST'])
-def generate_and_play_audio():
-    id = request.json.get('sentence_id', None)
-
-    sentence = session['sentences_list'][int(id)]['translated_sentence']
-    story_id = session['story_id']
-    foreign_lang = session['foreign_language']
-
-    audio_folder = Path(__file__).parent /"static/audio"
-    speech_file_path = audio_folder / f"speech-story{story_id}sentence{id}.mp3"
-
-    response = client.audio.speech.create(
-        model = "tts-1",
-        voice="alloy",
-        input= sentence,
-        speed=.9, 
-    )
-
-    response.stream_to_file(speech_file_path)
-
-    return jsonify({'audio_url': f"/static/audio/speech-story{story_id}sentence{id}.mp3"})
 
 @app.route('/save_score', methods = ['POST'])
 def save_the_user_story_score():
@@ -403,6 +377,28 @@ def translate_sentence_API_function(sentence, base_lang, foreign_lang):
         translated_sentence = json.loads('"' + no_quotes  + '"')       
 
     return (translated_sentence, tokens)
+
+@app.route('/play_sentence', methods =['POST'])
+def generate_and_play_audio():
+    id = request.json.get('sentence_id', None)
+
+    sentence = session['sentences_list'][int(id)]['translated_sentence']
+    story_id = session['story_id']
+    foreign_lang = session['foreign_language']
+
+    audio_folder = Path(__file__).parent /"static/audio"
+    speech_file_path = audio_folder / f"speech-story{story_id}sentence{id}.mp3"
+
+    response = client.audio.speech.create(
+        model = "tts-1",
+        voice="alloy",
+        input= sentence,
+        speed=.9, 
+    )
+
+    response.stream_to_file(speech_file_path)
+
+    return jsonify({'audio_url': f"/static/audio/speech-story{story_id}sentence{id}.mp3"})
 
 #############################################################
 # Supporting CHATGPT API functions for processing data for SQL Storage
@@ -677,8 +673,6 @@ def order_table_by_users_scores():
     serialized_stories = serialize_story_list(stories_sort)
     return jsonify({'stories':serialized_stories})  
 
-  
-
 ################################################################
 #Supporting AJAX Function for Home page sorting and filtering
 
@@ -700,71 +694,3 @@ def serialize_story_list(stories_sort):
         
         serialized_stories.append(serialized_story)
     return serialized_stories
-
-
-# Work from the word to word translation. 
-###################################################
-
-# def create_direct_word_translations(sentence, translated, base_lang, foreign_lang):
-#     """Recieves two sentence variables and their languages. 
-#         Returns a dictionary with keys 'base_tuple', 'foreign_tuple', 'matching_tuple'
-#     """
-#     translated_clean = lower_case_and_no_punctuation(translated)
-#     sentence_clean = lower_case_and_no_punctuation(sentence)
-
-#     base_tuple, tokens_base = translate_word_for_word_API(sentence_clean, base_lang, foreign_lang)
-#     foreign_tuple, tokens_foreign = translate_word_for_word_API(translated_clean, foreign_lang, base_lang)
-
-#     saveWordsInDatabase(base_tuple, foreign_tuple, base_lang, foreign_lang)
-#     token_count_words = tokens_base + tokens_foreign
-
-#     return (base_tuple, foreign_tuple, token_count_words)
-
-# def translate_word_for_word_API(sentence, sentence_lang, translation_lang):
-#     """ Send out a ChatGPT API request for word to word translations. """
-    
-#     completion = client.chat.completions.create(
-#         model="gpt-3.5-turbo",
-#         messages=[
-#             {"role": "system", 
-#             "content": f"Return ONLY a python list of tuples based on the direct translation of each word from {sentence_lang} to {translation_lang}."},
-#             {"role": "user", 
-#             "content": sentence}
-#         ]
-#     )
-#     tokens = completion.usage.total_tokens
-
-#     tuple_list = ast.literal_eval(isolate_words_tuple_list(completion.choices[0].message.content))
-
-        
-#     return (tuple_list, tokens) 
-
-# def isolate_words_tuple_list(string):
-#     """Evaluation the API return and ensure only the tuple is added to the database."""
-#     pattern = r'\[\(.*\)\]'
-#     match = re.search(pattern, string)
-
-#     if match:
-#         result = match.group(0)
-#         # result_edit = re.sub('"', "", result)
-#         return result
-#     else:
-#         return False
-    
-# def saveWordsInDatabase(base_tuple, foreign_tuple, base_lang, foreign_lang):
-#     """Save words in the database."""
-   
-#     for base,foreign in base_tuple:
-#         WordForWord.check_for_duplicate(
-#             base_language = base_lang, 
-#             foreign_language = foreign_lang, 
-#             base_text = base,
-#             foreign_text = foreign)
-        
-#     for foreign,base in foreign_tuple:
-#         WordForWord.check_for_duplicate(
-#             base_language = foreign_lang, 
-#             foreign_language= base_lang, 
-#             base_text = base,
-#             foreign_text = foreign
-#         )
