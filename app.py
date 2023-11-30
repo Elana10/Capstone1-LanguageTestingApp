@@ -10,7 +10,7 @@ from pathlib import Path
 from pydub import AudioSegment
 from pydub.playback import play
 from datetime import datetime
-from secret import secret_key
+# from secret import secret_key
 
 
 from flask import Flask, render_template, request, flash, redirect, session, g, jsonify
