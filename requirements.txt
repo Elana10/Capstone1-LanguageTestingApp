@@ -30,7 +30,7 @@ greenlet==1.1.0
 gunicorn==21.2.0
 h11==0.11
 httpcore==0.13.3
-httpx==1.0.0b0
+httpx==0.23.0
 idna==3.2
 ipython==7.18.1
 ipython-genutils==0.2.0
