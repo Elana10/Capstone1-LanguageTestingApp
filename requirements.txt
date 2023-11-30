@@ -11,7 +11,7 @@ beautifulsoup4==4.10.0
 blinker==1.4
 bs4==0.0.1
 certifi==2023.7.22
-cffi==1.16.0
+cffi==1.15.1
 charset-normalizer==3.3.1
 click==8.0.1
 decorator==5.0.9
